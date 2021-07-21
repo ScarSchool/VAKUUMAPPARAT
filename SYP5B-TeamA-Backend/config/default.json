@@ -1,0 +1,32 @@
+{
+  "backend": {
+    "hostname": "vakuumappar.at",
+    "port": 8080,
+    "apiPrefix": "/api/v1"
+  },
+  "security": {
+    "tokenExpirationTime": 300,
+    "certKeyFilePath": "./certs/vakuumappar.at.key",
+    "certFilePath": "./certs/vakuumappar.at.cert.pem",
+    "cors": {
+        "origin": [
+            "http://localhost:3000",
+            "http://localhost:5000"
+         ]
+    }
+  },
+  "dbSettings": {
+    "databaseURL": "mongodb://localhost",
+    "databaseName": "dbTeamA"
+  },
+  "cronJobs": {
+    "demandExecuteTime": 0.05,
+    "demandExpireTime": 0.000103148148148148148148
+  },
+  "devOptions": {
+    "mockdata": false,
+    "recreateDatabase": true,
+    "createDefaultCategories": true,
+    "createDefaultRequirements": true
+  }
+}

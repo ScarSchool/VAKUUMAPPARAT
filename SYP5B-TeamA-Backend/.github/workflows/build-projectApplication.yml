@@ -1,0 +1,22 @@
+name: "Build Documentation"
+on:
+  workflow_dispatch:
+  push:
+ 
+jobs:
+  runPandoc:
+    runs-on: ubuntu-18.04
+    container: rstropek/pandoc-latex
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Run pandoc
+        run: pandoc --template https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/v1.4.0/eisvogel.tex --from markdown --pdf-engine=xelatex ./_documentation/projectApplication.md --output=./_documentation/projectApplication.pdf 
+
+      - name: Archive PDF as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Project Application
+          path: ./_documentation/projectApplication.pdf

@@ -1,0 +1,43 @@
+{
+  "name": "VAKUUMAPPARAT",
+  "version": "1.0.0",
+  "description": "Vermittlung aller Instruktoren und Hilfesuchenden um Saetmlichen pädagogisch progressive ambitionierte und raffinierte Assistenz anzubieten",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "nyc --reporter=lcov --reporter=text-summary mocha \"./tests/*.js\" --timeout 10000 --exit --reporter mocha-junit-reporter",
+    "testnormal": "mocha \"./tests/*.js\" --timeout 10000 --exit",
+    "test_debug": "nyc --reporter=lcov --reporter=text-summary mocha --inspect-brk \"./tests/*.js\" --timeout 10000 --exit --reporter mocha-junit-reporter",
+    "eslint": "eslint --ext js ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acka99/SRMNEW"
+  },
+  "author": "kaa",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "config": "^3.3.4",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.1",
+    "express-bearer-token": "^2.4.0",
+    "express-longpoll": "^0.0.6",
+    "mocha-junit-reporter": "^2.0.0",
+    "mongodb": "^3.6.2",
+    "mongoose": "^5.10.9",
+    "node-cron": "^2.0.3",
+    "tedious": "^8.3.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-datetime": "^1.7.0",
+    "chai-http": "^4.3.0",
+    "eslint": "^7.8.1",
+    "mocha": "^7.2.0",
+    "nyc": "^15.1.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.1.3"
+  }
+}

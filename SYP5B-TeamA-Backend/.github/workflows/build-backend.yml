@@ -1,0 +1,48 @@
+name: "Build backend"
+on: push
+
+jobs:
+  buildNodeBackend:
+    name: "Build backend"
+    runs-on: ubuntu-18.04
+    
+    steps:
+      - name: "Checkout latest master"
+        uses: actions/checkout@v2
+      
+      - name: "Setup node"
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: "Setup and start mongodb"
+        uses: supercharge/mongodb-github-action@1.3.0
+        with:
+          mongodb-version: '4.2'
+
+      - name: "Install npm dependencies"
+        run: npm ci
+
+      - name: "Adding hostname to hosts file"
+        run: echo '127.0.0.1 vakuumappar.at' | sudo tee -a /etc/hosts
+
+      - name: "Build backend and run tests"
+        run: npm test
+        
+      - name: "Upload coverage"
+        uses: actions/upload-artifact@v2
+        with:
+            name: Coverage Report
+            path: ./coverage/lcov-report
+                      
+      - name: "Check min code coverage"
+        uses: VeryGoodOpenSource/very_good_coverage@v1.1.1
+        with:
+            path: ./coverage/lcov.info
+            min_coverage: 80
+            
+      - name: "Publish test results"
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: test-results.xml

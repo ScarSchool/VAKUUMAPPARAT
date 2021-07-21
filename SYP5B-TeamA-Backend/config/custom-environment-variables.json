@@ -1,0 +1,26 @@
+{
+  "backend": {
+    "hostname": "VAK_HOSTNAME",
+    "port": "VAK_PORT",
+    "apiPrefix": "VAK_APIPREFIX"
+  },
+  "security": {
+    "tokenExpirationTime": "VAK_TOKENEXPIRATIONTIME",
+    "certKeyFilePath": "VAK_CERTKEYFILEPATH",
+    "certFilePath": "VAK_CARTFILEPATH"
+  },
+  "dbSettings": {
+    "databaseURL": "VAK_DATABASEURL",
+    "databaseName": "VAK_DATABASENAME"
+  },
+  "cronJobs": {
+    "demandExecuteTime": "VAK_DEMANDEXECUTETIME",
+    "demandExpireTime": "VAK_DEMANDEXPIRETIME"
+  },
+  "devOptions": {
+    "mockdata": "VAK_USEMOCKDATA",
+    "recreateDatabase": "VAK_RECREATEDB",
+    "createDefaultCategories": "VAK_CREATEDEFAULTCATEGORIES",
+    "createDefaultRequirements": "VAK_CREATEDEFAULTREQUIREMENTS"
+  }
+}

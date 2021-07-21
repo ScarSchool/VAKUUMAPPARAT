@@ -1,0 +1,1841 @@
+---
+openapi: 3.0.0
+info:
+  title: VAKUUMAPPARAT-REST-API
+  description: VAKUUMAPPARAT-REST-API
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/SYP-TeamA/VAKUUMAPPARAT-API/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: https://vakuumapparat:8080/
+  description: The backend server
+tags:
+- name: users
+  description: Marks one of the endpoints for the user entity.
+- name: profile
+  description: Marks one of the endpoints relevant for profiles.
+- name: categories
+  description: Marks one of the endpoints for the category entity.
+- name: offers
+  description: Marks one of the endpoints for the offer entity.
+- name: tags
+  description: Marks one of the endpoints for the tags entity.
+- name: notifications
+  description: Marks one of the endpoints for the notification entity.
+- name: reviews
+  description: Marks one of the endpoints for the review entity.
+paths:
+  /users:
+    get:
+      tags:
+      - users
+      description: gets one or more users
+      parameters:
+      - name: state
+        in: query
+        description: active / inactive; either this parameter or the username
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: username
+        in: query
+        description: get a single user by their username; either this parameter or state
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: user(s) found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - users
+      description: registers a new user
+      requestBody:
+        $ref: '#/components/requestBodies/User'
+      responses:
+        "201":
+          description: User created and registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}:
+    get:
+      tags:
+      - users
+      description: Get one user per id
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns one user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - users
+      description: Deletes a user per id
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "201":
+          description: No content, user deleted
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+      - users
+      description: Partially update user per id
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns updated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}/profile:
+    get:
+      tags:
+      - users
+      - profile
+      description: Get one user per id
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns one user with profile fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}/setLikeState:
+    patch:
+      tags:
+      - users
+      - profile
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body'
+      responses:
+        "204":
+          description: Set the like state for this user
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}/reviews:
+    get:
+      tags:
+      - users
+      - reviews
+      description: Gets all reviews of user
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: All reviews of user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - users
+      - reviews
+      description: creates a new review for the user
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/Review'
+      responses:
+        "201":
+          description: Review created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}/reviews/{reviewId}:
+    get:
+      tags:
+      - users
+      - reviews
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: reviewId
+        in: path
+        description: The id of the review
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns one review per id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - users
+      - reviews
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: reviewId
+        in: path
+        description: The id of the review
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: deletes a review
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+      - users
+      - reviews
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: reviewId
+        in: path
+        description: The id of the review
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/Review'
+      responses:
+        "200":
+          description: Updates a review
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}/reviews/{reviewId}/answers:
+    post:
+      tags:
+      - users
+      - reviews
+      description: creates a new review for the user
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: reviewId
+        in: path
+        description: The id of the review
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/ReviewAnswer'
+      responses:
+        "201":
+          description: Review answer created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewAnswer'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}/reviews/{reviewId}/answers/{answerId}:
+    get:
+      tags:
+      - users
+      - reviews
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: reviewId
+        in: path
+        description: The id of the review
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: answerId
+        in: path
+        description: The id of the answer
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns one review answer per id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewAnswer'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - users
+      - reviews
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: reviewId
+        in: path
+        description: The id of the review
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: answerId
+        in: path
+        description: The id of the answer
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: deletes a review answer
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+      - users
+      - reviews
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: reviewId
+        in: path
+        description: The id of the review
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: answerId
+        in: path
+        description: The id of the answer
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/ReviewAnswer'
+      responses:
+        "200":
+          description: Updates a review answer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewAnswer'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{userId}/notifications/poll:
+    get:
+      tags:
+      - users
+      - notifications
+      description: Long polling route for notifications per user
+      parameters:
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns new notification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+  /users/notifications:
+    get:
+      tags:
+      - users
+      - notifications
+      parameters:
+      - name: count
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: onlyUnread
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      responses:
+        "200":
+          description: Gets all Notifications of authenticated User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+  /users/{userId}/notifications:
+    get:
+      tags:
+      - users
+      - notifications
+      parameters:
+      - name: count
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: onlyUnread
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: userId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Gets Notifications of authenticated User; alternative Route
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+    post:
+      tags:
+      - users
+      - notifications
+      parameters:
+      - name: count
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      - name: onlyUnread
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+      - name: userId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/Notification'
+      responses:
+        "201":
+          description: Created Notification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+  /users/notifications/{notificationId}:
+    get:
+      tags:
+      - users
+      - notifications
+      parameters:
+      - name: notificationId
+        in: path
+        description: The notification id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns notification corresponding to the given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+  /users/{userId}/notifications/{notificationId}:
+    get:
+      tags:
+      - users
+      - notifications
+      parameters:
+      - name: notificationId
+        in: path
+        description: The notification id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns notification corresponding to the given id; Alternative route
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+    delete:
+      tags:
+      - users
+      - notifications
+      parameters:
+      - name: notificationId
+        in: path
+        description: The notification id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "204":
+          description: Deleted notification corresponding to Id
+    patch:
+      tags:
+      - users
+      - notifications
+      parameters:
+      - name: notificationId
+        in: path
+        description: The notification id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: userId
+        in: path
+        description: The user id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns updated notification corresponding to the given id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+  /users/notifications/read/{notificationId}:
+    patch:
+      tags:
+      - users
+      - notifications
+      parameters:
+      - name: notificationId
+        in: path
+        description: The notification id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Marks Notification as read
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+  /users/notifications/deleteAll:
+    delete:
+      tags:
+      - users
+      - notification
+      responses:
+        "204":
+          description: Deletes all Notifications of User
+  /users/dashboardInfo:
+    get:
+      tags:
+      - users
+      responses:
+        "200":
+          description: Get all dashboard relevant information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardInfo'
+  /categories:
+    get:
+      tags:
+      - categories
+      description: gets all categories
+      responses:
+        "200":
+          description: found categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - categories
+      description: Creates a new category
+      requestBody:
+        $ref: '#/components/requestBodies/Category'
+      responses:
+        "201":
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /categories/{categoryId}:
+    get:
+      tags:
+      - categories
+      description: Get one category per id
+      parameters:
+      - name: categoryId
+        in: path
+        description: The category id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns one category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - categories
+      description: Deletes a category per id
+      parameters:
+      - name: categoryId
+        in: path
+        description: The category id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "201":
+          description: No content, category deleted
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+      - categories
+      description: Partially update category per id
+      parameters:
+      - name: categoryId
+        in: path
+        description: The category id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns updated category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /categories/{categoryId}/reportDemand:
+    patch:
+      tags:
+      - categories
+      description: Adds user to demands list of offer
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns bool and number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/demandsResponse'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /categories/{categoryId}/removeDemand:
+    patch:
+      tags:
+      - categories
+      description: Removes user to demands list of offer
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns bool and number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/demandsResponse'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /categories/{categoryId}/offers:
+    get:
+      tags:
+      - offers
+      description: Gets all offers for one category / Gets all offers for one category that have specified tags
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: title
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: tags
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: tag1;tag2;tag3
+      responses:
+        "200":
+          description: Got all offers, else []
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Offer'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - offers
+      description: Create a new offer for this category
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        $ref: '#/components/requestBodies/Offer'
+      responses:
+        "201":
+          description: Offer created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /categories/{categoryId}/offers/{offerId}:
+    get:
+      tags:
+      - offers
+      description: Get offer by id
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: offerId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Got offer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - offers
+      description: Deletes a offer per id
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: offerId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "201":
+          description: No content, offer deleted
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+      - offers
+      description: Partly update an offer
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: offerId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns updated offer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /categories/{categoryId}/offers{offerId}/addEnrollment:
+    patch:
+      tags:
+      - offers
+      description: Adds a user to the enrollingAttendees list of the offer
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: offerId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_1'
+      responses:
+        "204":
+          description: User was added to enrolledUsers / User is already in enrolledUsers
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /categories/{categoryId}/offers{offerId}/removeEnrollment:
+    patch:
+      tags:
+      - offers
+      description: Removed a user to from enrollingAttendees list of the offer
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: offerId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_2'
+      responses:
+        "204":
+          description: User was removed from enrolledUsers / User is not in enrolledUsers
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /categories/{categoryId}/offers{offerId}/acceptAttendee:
+    patch:
+      tags:
+      - offers
+      description: Adds a user to the attendees list
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: offerId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_3'
+      responses:
+        "204":
+          description: User was added to attendees field / User is in attendees field
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /categories/{categoryId}/offers{offerId}/rejectAttendee:
+    patch:
+      tags:
+      - offers
+      description: Removes a user to from attendee list of the offer
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: offerId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_4'
+      responses:
+        "204":
+          description: User was removed from antendees field / User is not in attendees field
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /tags:
+    get:
+      tags:
+      - tags
+      parameters:
+      - name: includes
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: number
+      responses:
+        "200":
+          description: Returns a list of tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+      - tags
+      description: Creates a new tag
+      requestBody:
+        $ref: '#/components/requestBodies/Tag'
+      responses:
+        "201":
+          description: Tag created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /tags/{tagId}:
+    get:
+      tags:
+      - tags
+      description: Get tag by id
+      parameters:
+      - name: tagId
+        in: path
+        description: The tag id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Got tag by tagId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+      - tags
+      description: Deletes a tag per id
+      parameters:
+      - name: tagId
+        in: path
+        description: The tag id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "201":
+          description: No content, tag deleted
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      tags:
+      - tags
+      description: Partially update Tags per id
+      parameters:
+      - name: tagId
+        in: path
+        description: The tag id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Returns updated Tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+        default:
+          description: Errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        state:
+          type: string
+          description: active or inactive
+          example: active
+        firstname:
+          type: string
+        lastname:
+          type: string
+        generalInfo:
+          $ref: '#/components/schemas/User_generalInfo'
+        additionalInfo:
+          $ref: '#/components/schemas/User_additionalInfo'
+        privateInfo:
+          $ref: '#/components/schemas/User_privateInfo'
+        statistics:
+          $ref: '#/components/schemas/User_statistics'
+    UserProfile:
+      type: object
+      properties:
+        _id:
+          type: string
+        state:
+          type: string
+          description: active or inactive
+          example: active
+        firstname:
+          type: string
+        lastname:
+          type: string
+        generalInfo:
+          $ref: '#/components/schemas/User_generalInfo'
+        additionalInfo:
+          $ref: '#/components/schemas/User_additionalInfo'
+        privateInfo:
+          $ref: '#/components/schemas/User_privateInfo'
+        statistics:
+          $ref: '#/components/schemas/User_statistics'
+        reviews:
+          $ref: '#/components/schemas/Review'
+        canReview:
+          type: boolean
+          description: Indicator whether or not the authenticated user is allowed to interact with reviews
+          example: false
+        myReview:
+          $ref: '#/components/schemas/Review'
+    Review:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        rating:
+          type: integer
+          description: 1-5
+        author:
+          $ref: '#/components/schemas/SimpleUser'
+        edited:
+          type: boolean
+        timestamp:
+          type: string
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReviewAnswer'
+    ReviewAnswer:
+      type: object
+      properties:
+        author:
+          $ref: '#/components/schemas/SimpleUser'
+        content:
+          type: string
+        edited:
+          type: boolean
+        timestamp:
+          type: string
+          description: Represents an ISO date string
+    SimpleUser:
+      type: object
+      properties:
+        _id:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        pictureUrl:
+          type: string
+      description: simple user object that is embedded in some responses
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: The status code of the error.
+        message:
+          type: string
+          description: The error message
+    Category:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        userDemands:
+          type: boolean
+        demandsCount:
+          type: number
+    Offer:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        attendees:
+          type: array
+          description: userIds of the attendees
+          items:
+            type: string
+        attendeeCount:
+          type: number
+          description: The sum of the currently registered antendees
+        min_attendees:
+          type: number
+        max_attendees:
+          type: number
+        enrollingAttendees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Offer_enrollingAttendees'
+        requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Requirement'
+        offeror:
+          $ref: '#/components/schemas/Offer_offeror'
+      description: An offer for a private tutoring session.
+    Tag:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        count:
+          type: number
+      description: Tag for search
+    Requirement:
+      properties:
+        requirementName:
+          type: string
+        requirementValue:
+          type: string
+      description: Requirement for offers
+    demandsResponse:
+      properties:
+        demandsCount:
+          type: number
+        userDemands:
+          type: boolean
+      description: Demands for offers
+    Notification:
+      properties:
+        _id:
+          type: string
+        read:
+          type: string
+        timestamp:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+          description: type of the general tone of the notification. Enum [info, success, warning, error]
+        contentReference:
+          $ref: '#/components/schemas/ContentReference'
+      description: Notifciations for whatever cause
+    ContentReference:
+      properties:
+        content:
+          type: string
+          description: The Type of this field is mixed and can be an object or a string
+          example: https://app.swaggerhub.com/apis/SYP-TeamA/VAKUUMAPPARAT-API/1.0.0#free
+        type:
+          type: string
+          description: 'Describes the mixed type of the content field. Enum: [none, offer, demand, profile, url]'
+          example: url
+      description: Content reference for Notifications
+    DashboardInfo:
+      properties:
+        myOffer:
+          $ref: '#/components/schemas/DashboardInfo_myOffer'
+        offersAttendeeIn:
+          $ref: '#/components/schemas/DashboardInfo_myOffer'
+        offersEnrolledIn:
+          $ref: '#/components/schemas/DashboardInfo_myOffer'
+        students:
+          $ref: '#/components/schemas/SimpleUser'
+        teachers:
+          $ref: '#/components/schemas/SimpleUser'
+      description: Info for the dashboard
+    body:
+      type: object
+      properties:
+        likeState:
+          type: boolean
+    body_1:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Short text for user, why he should be accepted
+    body_2:
+      type: object
+      properties:
+        id:
+          type: string
+    body_3:
+      type: object
+      properties:
+        id:
+          type: string
+    body_4:
+      type: object
+      properties:
+        id:
+          type: string
+    User_generalInfo:
+      type: object
+      properties:
+        visibility:
+          type: string
+          description: public or private; does not get sent if private
+          example: public
+        biography:
+          type: string
+    User_additionalInfo:
+      type: object
+      properties:
+        visibility:
+          type: string
+          description: public or private; does not get sent if private
+          example: public
+        jobTitle:
+          type: string
+        education:
+          type: string
+        residency:
+          type: string
+    User_privateInfo:
+      type: object
+      properties:
+        visibility:
+          type: string
+          description: public or private; does not get sent if private
+          example: public
+        phoneNumber:
+          type: string
+        username:
+          type: string
+          description: email
+          example: verylustig@haha.com
+    User_statistics:
+      type: object
+      properties:
+        averageRating:
+          type: number
+          description: This represents the average rating of all ratings the user hgotten for his offers (0-tbd)
+          example: 4.7
+        reviewCount:
+          type: number
+          description: Represents the amount of reviews this user has gotten
+          example: 5
+        studentCount:
+          type: number
+          description: Represents the amount of people that have taken an offer from thuser
+          example: 7
+        offerCount:
+          type: number
+          description: Represents the total offer count of the user
+          example: 200
+    Offer_enrollingAttendees:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/SimpleUser'
+        description:
+          type: string
+    Offer_offeror:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id of the creator
+        username:
+          type: string
+        picture_url:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+    DashboardInfo_myOffer:
+      type: object
+      properties:
+        _id:
+          description: Offer Id
+        categoryId:
+          description: CategoryId
+  requestBodies:
+    User:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+              username:
+                type: string
+                description: is also email
+              state:
+                type: string
+                description: active or inactive
+                example: active
+              firstname:
+                type: string
+              lastname:
+                type: string
+              generalInfo:
+                type: object
+                properties:
+                  visibility:
+                    type: string
+                    description: public or private
+                  biography:
+                    type: string
+              additionalInfo:
+                type: object
+                properties:
+                  visibility:
+                    type: string
+                    description: public or private
+                  jobTitle:
+                    type: string
+                  education:
+                    type: string
+                  residency:
+                    type: string
+              privateInfo:
+                type: object
+                properties:
+                  visibility:
+                    type: string
+                    description: public or private
+                  phoneNumber:
+                    type: string
+                  username:
+                    type: string
+                    description: email
+                    example: verylustig@haha.com
+    Category:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+    Offer:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              desciption:
+                type: string
+              tags:
+                type: array
+                items:
+                  type: string
+              min_attendees:
+                type: number
+              max_attendees:
+                type: number
+    Tag:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+    Review:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                description: optional title of the review
+              content:
+                type: string
+                description: the comment of the review
+              rating:
+                type: integer
+                description: 1-5
+    ReviewAnswer:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+                description: the comment of the review
+    Notification:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                example: Check this out!
+              type:
+                type: string
+                description: type of the general tone of the notification. Enum [info, success, warning, error]
+                example: info
+              description:
+                type: string
+                example: Something happened!
+              contentReference:
+                $ref: '#/components/schemas/ContentReference'
